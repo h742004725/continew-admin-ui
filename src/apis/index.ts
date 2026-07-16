@@ -17,3 +17,5 @@ export * from './open/type'
 export * from './tenant/type'
 export * from './schedule/type'
 export * from './code/type'
+
+export * from './asm'
