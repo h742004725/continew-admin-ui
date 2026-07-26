@@ -17,6 +17,7 @@
       <a-input-number v-model="queryForm.port" placeholder="端口" allow-clear style="width: 110px" @change="search" />
       <a-input v-model="queryForm.product" placeholder="产品" allow-clear style="width: 130px" @change="search" />
       <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 130px" @change="search" />
+      <a-input v-model="queryForm.httpServer" placeholder="中间件" allow-clear style="width: 130px" @change="search" />
       <a-input v-model="queryForm.domain" placeholder="域名" allow-clear style="width: 140px" @change="search" />
       <a-tooltip content="仅看暴露资产（数据库/远程管理/证书过期）">
         <a-switch v-model="queryForm.exposed" @change="onExposedChange">
@@ -77,6 +78,10 @@ const queryForm = reactive<AssetServiceQuery>({
   exposureType: (route.query.exposureType as string) || undefined,
   // 支持从主机列表下钻：?tab=service&ipStr=1.6.6.129
   ipStr: (route.query.ipStr as string) || undefined,
+  // 支持从画像分布下钻：?port=443 / ?product=nginx / ?httpServer=nginx
+  port: route.query.port ? Number(route.query.port) : undefined,
+  product: (route.query.product as string) || undefined,
+  httpServer: (route.query.httpServer as string) || undefined,
 })
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(

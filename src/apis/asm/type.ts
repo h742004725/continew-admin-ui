@@ -71,6 +71,8 @@ export interface AssetServiceQuery {
   transport?: string
   product?: string
   httpTitle?: string
+  /** Web 中间件 Server 头（精确匹配，画像下钻用） */
+  httpServer?: string
   org?: string
   domain?: string
   countryCode?: string

@@ -23,22 +23,22 @@
     <a-grid :cols="{ xs: 1, md: 2 }" :col-gap="16" :row-gap="16">
       <a-grid-item>
         <a-card title="开放端口 TOP10" :loading="loading">
-          <BarList :data="stat?.topPorts" />
+          <BarList :data="stat?.topPorts" clickable @item-click="(i) => goService({ port: i.name })" />
         </a-card>
       </a-grid-item>
       <a-grid-item>
         <a-card title="Web 中间件 TOP10" :loading="loading">
-          <BarList :data="stat?.topServers" />
+          <BarList :data="stat?.topServers" clickable @item-click="(i) => goService({ httpServer: i.name })" />
         </a-card>
       </a-grid-item>
       <a-grid-item>
         <a-card title="产品/服务 TOP10" :loading="loading">
-          <BarList :data="stat?.topProducts" />
+          <BarList :data="stat?.topProducts" clickable @item-click="(i) => goService({ product: i.name })" />
         </a-card>
       </a-grid-item>
       <a-grid-item>
         <a-card title="运营商 / ASN TOP10" :loading="loading">
-          <BarList :data="stat?.topAsn" />
+          <BarList :data="stat?.topAsn" clickable @item-click="(i) => goHost({ asn: i.name })" />
         </a-card>
       </a-grid-item>
       <a-grid-item :span="{ xs: 1, md: 2 }">
@@ -78,6 +78,16 @@ const router = useRouter()
 const goExposed = (exposureType?: string) => router.push({
   path: '/asm/asset',
   query: { tab: 'service', exposed: '1', exposureType: exposureType || 'ALL', countryCode: countryCode.value },
+})
+
+// 分布下钻：端口/中间件/产品 → 服务列表；ASN → 主机列表
+const goService = (q: Record<string, string>) => router.push({
+  path: '/asm/asset',
+  query: { tab: 'service', countryCode: countryCode.value, ...q },
+})
+const goHost = (q: Record<string, string>) => router.push({
+  path: '/asm/asset',
+  query: { tab: 'host', countryCode: countryCode.value, ...q },
 })
 
 const countryOptions = [

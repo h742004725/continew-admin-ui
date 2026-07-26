@@ -34,7 +34,7 @@
 
 <script setup lang="tsx">
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { TableColumnData } from '@arco-design/web-vue'
 import { listAssetHost, type AssetHostQuery, type AssetHostResp } from '@/apis/asm'
 import { useTable } from '@/hooks'
@@ -47,7 +47,12 @@ const COUNTRY_OPTIONS = [
 ]
 
 const router = useRouter()
-const queryForm = reactive<AssetHostQuery>({ countryCode: 'IN' })
+const route = useRoute()
+// 支持从画像 ASN 分布下钻：?tab=host&asn=AS9583
+const queryForm = reactive<AssetHostQuery>({
+  countryCode: (route.query.countryCode as string) || 'IN',
+  asn: (route.query.asn as string) || undefined,
+})
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
   (page) => listAssetHost({ ...queryForm, ...page }),

@@ -1,7 +1,13 @@
 <template>
   <a-empty v-if="!data || !data.length" description="暂无数据" />
   <div v-else class="bar-list">
-    <div v-for="item in data" :key="item.name" class="bar-row">
+    <div
+      v-for="item in data"
+      :key="item.name"
+      class="bar-row"
+      :class="{ clickable }"
+      @click="clickable && emit('itemClick', item)"
+    >
       <span class="bar-name" :title="item.name">{{ prefix }}{{ item.name }}</span>
       <div class="bar-track">
         <div class="bar-fill" :style="{ width: percent(item.count) }" />
@@ -15,10 +21,13 @@
 import { computed } from 'vue'
 import type { NameCountResp } from '@/apis/asm'
 
-const props = withDefaults(defineProps<{ data?: NameCountResp[], prefix?: string }>(), {
+const props = withDefaults(defineProps<{ data?: NameCountResp[], prefix?: string, clickable?: boolean }>(), {
   data: () => [],
   prefix: '',
+  clickable: false,
 })
+
+const emit = defineEmits<{ (e: 'itemClick', item: NameCountResp): void }>()
 
 const max = computed(() => Math.max(...(props.data || []).map((i) => i.count || 0), 1))
 const percent = (count?: number) => `${((count || 0) / max.value) * 100}%`
@@ -35,6 +44,18 @@ const percent = (count?: number) => `${((count || 0) / max.value) * 100}%`
   grid-template-columns: 130px 1fr 72px;
   align-items: center;
   gap: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.bar-row.clickable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.bar-row.clickable:hover {
+  background: var(--color-fill-2);
+}
+.bar-row.clickable:hover .bar-fill {
+  background: rgb(var(--arcoblue-5));
 }
 .bar-name {
   font-size: 13px;
