@@ -194,3 +194,34 @@ export interface AssetWebQuery {
   countryCode?: string
 }
 export interface AssetWebPageQuery extends AssetWebQuery, PageQuery {}
+
+/** 国家种子（疆域） */
+export interface RegionSeedResp {
+  id: string
+  countryCode: string
+  countryName: string
+  cctld?: string
+  monitorOn?: boolean
+  asnCount?: number
+  cidrCount?: number
+  ipv4Total?: number
+  hostCount?: number
+  coverage?: number
+  lastResolveTime?: string
+}
+export interface RegionResolveReq {
+  countryCode: string
+  countryName?: string
+  cctld?: string
+  rir?: string
+  sourceKey?: string
+}
+export interface RegionResolveResp {
+  countryCode: string
+  asnCount: number
+  cidrCount: number
+  insertedAsn: number
+  insertedCidr: number
+  ipv4Total: number
+  sources: string
+}
