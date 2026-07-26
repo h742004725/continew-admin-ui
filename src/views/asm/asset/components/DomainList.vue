@@ -52,6 +52,6 @@ const columns: TableColumnData[] = [
   { title: '解析 IP', dataIndex: 'ipList', ellipsis: true, tooltip: true },
   { title: 'IP 数', dataIndex: 'ipCount', width: 90 },
   { title: '关联服务数', dataIndex: 'serviceCount', width: 110 },
-  { title: '最近发现', dataIndex: 'lastSeen', width: 160 },
+  { title: '最近发现', dataIndex: 'lastSeen', width: 180 },
 ]
 </script>

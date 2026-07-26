@@ -75,6 +75,8 @@ const queryForm = reactive<AssetServiceQuery>({
   countryCode: (route.query.countryCode as string) || 'IN',
   exposed: route.query.exposed === '1' ? true : undefined,
   exposureType: (route.query.exposureType as string) || undefined,
+  // 支持从主机列表下钻：?tab=service&ipStr=1.6.6.129
+  ipStr: (route.query.ipStr as string) || undefined,
 })
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
@@ -108,7 +110,7 @@ const columns: TableColumnData[] = [
   { title: '标题', dataIndex: 'httpTitle', ellipsis: true, tooltip: true, width: 180 },
   { title: 'Server', dataIndex: 'httpServer', width: 130 },
   { title: '组织', dataIndex: 'org', ellipsis: true, tooltip: true, width: 160 },
-  { title: '采集时间', dataIndex: 'shodanTimestamp', width: 160 },
+  { title: '采集时间', dataIndex: 'shodanTimestamp', width: 180 },
   { title: '操作', slotName: 'action', width: 80, fixed: 'right' },
 ]
 

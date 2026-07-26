@@ -115,3 +115,32 @@ export interface AssetStatResp {
   topAsn: NameCountResp[]
   exposureSummary: NameCountResp[]
 }
+
+/** 主机(IP)资产 */
+export interface AssetHostResp {
+  id: string
+  ipStr: string
+  asn?: string
+  isp?: string
+  org?: string
+  os?: string
+  countryCode?: string
+  city?: string
+  cloudProvider?: string
+  portCount?: number
+  portList?: string
+  httpCount?: number
+  exposedCount?: number
+  domainCount?: number
+  firstSeen?: string
+  lastSeen?: string
+}
+export interface AssetHostQuery {
+  ipStr?: string
+  asn?: string
+  org?: string
+  city?: string
+  countryCode?: string
+  exposed?: boolean
+}
+export interface AssetHostPageQuery extends AssetHostQuery, PageQuery {}

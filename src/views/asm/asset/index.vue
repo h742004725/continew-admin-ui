@@ -1,6 +1,9 @@
 <template>
   <GiPageLayout>
     <a-tabs v-model:active-key="activeKey" type="rounded" @change="onChange">
+      <a-tab-pane key="host" title="主机">
+        <HostList v-if="activeKey === 'host'" />
+      </a-tab-pane>
       <a-tab-pane key="service" title="服务">
         <ServiceList v-if="activeKey === 'service'" />
       </a-tab-pane>
@@ -14,6 +17,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import HostList from './components/HostList.vue'
 import ServiceList from './components/ServiceList.vue'
 import DomainList from './components/DomainList.vue'
 
@@ -21,7 +25,7 @@ defineOptions({ name: 'AsmAsset' })
 
 const route = useRoute()
 const router = useRouter()
-const activeKey = ref<string>((route.query.tab as string) || 'service')
+const activeKey = ref<string>((route.query.tab as string) || 'host')
 
 watch(() => route.query.tab, (tab) => {
   if (tab) activeKey.value = String(tab)
