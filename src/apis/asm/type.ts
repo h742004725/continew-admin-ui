@@ -87,3 +87,24 @@ export interface AssetDomainQuery {
   domain?: string
 }
 export interface AssetDomainPageQuery extends AssetDomainQuery, PageQuery {}
+
+/** 名称-数量分布项（画像分布图通用） */
+export interface NameCountResp {
+  name: string
+  count: number
+}
+
+/** 国家攻击面画像总览 */
+export interface AssetStatResp {
+  countryCode: string
+  hostCount: number
+  serviceCount: number
+  httpCount: number
+  sslCount: number
+  domainCount: number
+  topPorts: NameCountResp[]
+  topProducts: NameCountResp[]
+  topServers: NameCountResp[]
+  topAsn: NameCountResp[]
+  exposureSummary: NameCountResp[]
+}
