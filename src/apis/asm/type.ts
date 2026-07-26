@@ -73,6 +73,8 @@ export interface AssetServiceQuery {
   httpTitle?: string
   org?: string
   domain?: string
+  countryCode?: string
+  exposed?: boolean
 }
 export interface AssetServicePageQuery extends AssetServiceQuery, PageQuery {}
 
