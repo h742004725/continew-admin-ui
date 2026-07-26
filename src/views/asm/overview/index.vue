@@ -38,7 +38,7 @@
       </a-grid-item>
       <a-grid-item>
         <a-card title="运营商 / ASN TOP10" :loading="loading">
-          <BarList :data="stat?.topAsn" prefix="AS" />
+          <BarList :data="stat?.topAsn" />
         </a-card>
       </a-grid-item>
       <a-grid-item :span="{ xs: 1, md: 2 }">
@@ -60,11 +60,11 @@
   </GiPageLayout>
 </template>
 
-<script setup lang="tsx">
-import { computed, defineComponent, onMounted, ref } from 'vue'
-import type { PropType } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import BarList from './BarList.vue'
 import { getAssetOverview } from '@/apis/asm'
-import type { AssetStatResp, NameCountResp } from '@/apis/asm'
+import type { AssetStatResp } from '@/apis/asm'
 
 defineOptions({ name: 'AsmOverview' })
 
@@ -89,36 +89,6 @@ const kpiList = computed(() => [
   { label: '高危暴露', value: totalExposure.value, danger: true },
 ])
 
-// 分布条形组件（单一强调色 + 数值直标）
-const BarList = defineComponent({
-  props: {
-    data: { type: Array as PropType<NameCountResp[]>, default: () => [] },
-    prefix: { type: String, default: '' },
-  },
-  setup(props) {
-    return () => {
-      const list = props.data || []
-      if (!list.length) {
-        return <a-empty description="暂无数据" />
-      }
-      const max = Math.max(...list.map((i) => i.count || 0), 1)
-      return (
-        <div class="bar-list">
-          {list.map((i) => (
-            <div class="bar-row" key={i.name}>
-              <span class="bar-name" title={i.name}>{props.prefix}{i.name}</span>
-              <div class="bar-track">
-                <div class="bar-fill" style={{ width: `${((i.count || 0) / max) * 100}%` }} />
-              </div>
-              <span class="bar-value">{(i.count || 0).toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      )
-    }
-  },
-})
-
 const fetchData = async () => {
   try {
     loading.value = true
@@ -131,43 +101,3 @@ const fetchData = async () => {
 
 onMounted(fetchData)
 </script>
-
-<style scoped lang="scss">
-.bar-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.bar-row {
-  display: grid;
-  grid-template-columns: 120px 1fr 72px;
-  align-items: center;
-  gap: 10px;
-}
-.bar-name {
-  font-family: var(--font-family-mono, monospace);
-  font-size: 13px;
-  color: var(--color-text-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.bar-track {
-  height: 16px;
-  background: var(--color-fill-2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-.bar-fill {
-  height: 100%;
-  background: rgb(var(--arcoblue-6));
-  border-radius: 4px;
-  transition: width 0.3s;
-}
-.bar-value {
-  font-family: var(--font-family-mono, monospace);
-  font-size: 13px;
-  text-align: right;
-  color: var(--color-text-1);
-}
-</style>
