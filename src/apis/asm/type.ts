@@ -87,6 +87,7 @@ export interface AssetDomainResp {
 }
 export interface AssetDomainQuery {
   domain?: string
+  countryCode?: string
 }
 export interface AssetDomainPageQuery extends AssetDomainQuery, PageQuery {}
 

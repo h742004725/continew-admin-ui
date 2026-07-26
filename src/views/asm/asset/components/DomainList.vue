@@ -10,6 +10,9 @@
     @refresh="search"
   >
     <template #toolbar-left>
+      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+      </a-select>
       <a-input v-model="queryForm.domain" placeholder="域名关键字" allow-clear style="width: 200px" @change="search" />
       <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
       <a-button @click="reset">重置</a-button>
@@ -23,7 +26,14 @@ import type { TableColumnData } from '@arco-design/web-vue'
 import { listAssetDomain, type AssetDomainQuery } from '@/apis/asm/asset'
 import { useTable } from '@/hooks'
 
-const queryForm = reactive<AssetDomainQuery>({})
+const COUNTRY_OPTIONS = [
+  { label: '印度 IN', value: 'IN' },
+  { label: '美国 US', value: 'US' },
+  { label: '日本 JP', value: 'JP' },
+  { label: '中国 CN', value: 'CN' },
+]
+
+const queryForm = reactive<AssetDomainQuery>({ countryCode: 'IN' })
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
   (page) => listAssetDomain({ ...queryForm, ...page }),

@@ -10,6 +10,9 @@
     @refresh="search"
   >
     <template #toolbar-left>
+      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+      </a-select>
       <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 150px" @change="search" />
       <a-input-number v-model="queryForm.port" placeholder="端口" allow-clear style="width: 110px" @change="search" />
       <a-input v-model="queryForm.product" placeholder="产品" allow-clear style="width: 130px" @change="search" />
@@ -42,10 +45,16 @@ import ServiceDetailDrawer from '../ServiceDetailDrawer.vue'
 
 // 暴露端口集合（与后端 ExposureRules 对齐：数据库 + 远程管理）
 const EXPOSED_PORTS = new Set([3306, 5432, 6379, 27017, 9200, 1433, 11211, 9042, 5984, 3389, 5900, 5901, 5985, 5986, 23])
+const COUNTRY_OPTIONS = [
+  { label: '印度 IN', value: 'IN' },
+  { label: '美国 US', value: 'US' },
+  { label: '日本 JP', value: 'JP' },
+  { label: '中国 CN', value: 'CN' },
+]
 
 const route = useRoute()
 // 支持从画像页联动进入并默认开启「暴露」过滤（/asm/asset?exposed=1）
-const queryForm = reactive<AssetServiceQuery>({ exposed: route.query.exposed === '1' ? true : undefined })
+const queryForm = reactive<AssetServiceQuery>({ countryCode: 'IN', exposed: route.query.exposed === '1' ? true : undefined })
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
   (page) => listAssetService({ ...queryForm, ...page }),
@@ -55,6 +64,7 @@ const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
 const search = () => doSearch()
 const reset = () => {
   Object.keys(queryForm).forEach((k) => (queryForm as any)[k] = undefined)
+  queryForm.countryCode = 'IN'
   doSearch()
 }
 
