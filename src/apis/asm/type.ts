@@ -75,6 +75,8 @@ export interface AssetServiceQuery {
   domain?: string
   countryCode?: string
   exposed?: boolean
+  /** 暴露类别：DATABASE_EXPOSED / REMOTE_MGMT / EXPIRED_CERT / ALL */
+  exposureType?: string
 }
 export interface AssetServicePageQuery extends AssetServiceQuery, PageQuery {}
 
@@ -95,6 +97,8 @@ export interface AssetDomainPageQuery extends AssetDomainQuery, PageQuery {}
 export interface NameCountResp {
   name: string
   count: number
+  /** 类别代码（暴露面汇总用于下钻） */
+  code?: string
 }
 
 /** 国家攻击面画像总览 */

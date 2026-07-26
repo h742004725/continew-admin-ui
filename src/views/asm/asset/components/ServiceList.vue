@@ -18,12 +18,21 @@
       <a-input v-model="queryForm.product" placeholder="产品" allow-clear style="width: 130px" @change="search" />
       <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 130px" @change="search" />
       <a-input v-model="queryForm.domain" placeholder="域名" allow-clear style="width: 140px" @change="search" />
-      <a-tooltip content="仅看数据库/远程管理等暴露端口">
-        <a-switch v-model="queryForm.exposed" @change="search">
+      <a-tooltip content="仅看暴露资产（数据库/远程管理/证书过期）">
+        <a-switch v-model="queryForm.exposed" @change="onExposedChange">
           <template #checked>暴露</template>
           <template #unchecked>暴露</template>
         </a-switch>
       </a-tooltip>
+      <a-select
+        v-if="queryForm.exposed"
+        v-model="queryForm.exposureType"
+        style="width: 150px"
+        placeholder="暴露类别"
+        @change="search"
+      >
+        <a-option v-for="t in EXPOSURE_TYPES" :key="t.value" :value="t.value">{{ t.label }}</a-option>
+      </a-select>
       <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
       <a-button @click="reset">重置</a-button>
     </template>
@@ -52,9 +61,21 @@ const COUNTRY_OPTIONS = [
   { label: '中国 CN', value: 'CN' },
 ]
 
+// 暴露类别（与后端 ExposureRules 对齐）
+const EXPOSURE_TYPES = [
+  { label: '全部暴露', value: 'ALL' },
+  { label: '数据库直接暴露', value: 'DATABASE_EXPOSED' },
+  { label: '远程管理暴露', value: 'REMOTE_MGMT' },
+  { label: '证书过期', value: 'EXPIRED_CERT' },
+]
+
 const route = useRoute()
-// 支持从画像页联动进入并默认开启「暴露」过滤（/asm/asset?exposed=1）
-const queryForm = reactive<AssetServiceQuery>({ countryCode: 'IN', exposed: route.query.exposed === '1' ? true : undefined })
+// 支持从画像页联动进入：?exposed=1&exposureType=xxx&countryCode=IN
+const queryForm = reactive<AssetServiceQuery>({
+  countryCode: (route.query.countryCode as string) || 'IN',
+  exposed: route.query.exposed === '1' ? true : undefined,
+  exposureType: (route.query.exposureType as string) || undefined,
+})
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
   (page) => listAssetService({ ...queryForm, ...page }),
@@ -62,6 +83,11 @@ const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
 )
 
 const search = () => doSearch()
+// 开关暴露过滤：开启时默认查看全部暴露类别，关闭时清空类别
+const onExposedChange = (val: boolean | string | number) => {
+  queryForm.exposureType = val ? (queryForm.exposureType || 'ALL') : undefined
+  doSearch()
+}
 const reset = () => {
   Object.keys(queryForm).forEach((k) => (queryForm as any)[k] = undefined)
   queryForm.countryCode = 'IN'

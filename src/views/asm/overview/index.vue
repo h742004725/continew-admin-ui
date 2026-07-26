@@ -48,7 +48,7 @@
             <a-link @click="goExposed()">查看暴露资产 <icon-right /></a-link>
           </template>
           <a-space wrap size="large">
-            <div v-for="item in stat?.exposureSummary" :key="item.name" class="exposure-item" @click="goExposed()">
+            <div v-for="item in stat?.exposureSummary" :key="item.name" class="exposure-item" @click="goExposed(item.code)">
               <a-statistic
                 :title="item.name"
                 :value="item.count"
@@ -74,8 +74,11 @@ import type { AssetStatResp } from '@/apis/asm'
 defineOptions({ name: 'AsmOverview' })
 
 const router = useRouter()
-// 画像 → 查询联动：跳转资产列表并开启「暴露」过滤
-const goExposed = () => router.push({ path: '/asm/asset', query: { tab: 'service', exposed: '1' } })
+// 画像 → 查询联动：跳转资产列表并按暴露类别下钻（不传类别则查看全部暴露）
+const goExposed = (exposureType?: string) => router.push({
+  path: '/asm/asset',
+  query: { tab: 'service', exposed: '1', exposureType: exposureType || 'ALL', countryCode: countryCode.value },
+})
 
 const countryOptions = [
   { label: '印度 IN', value: 'IN' },
