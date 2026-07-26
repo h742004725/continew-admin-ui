@@ -146,3 +146,27 @@ export interface AssetHostQuery {
   exposed?: boolean
 }
 export interface AssetHostPageQuery extends AssetHostQuery, PageQuery {}
+
+/** 证书资产 */
+export interface AssetCertResp {
+  serviceId: string
+  ipStr: string
+  port: number
+  certSubjectCn?: string
+  certIssuerCn?: string
+  certExpired?: boolean
+  certIssued?: string
+  certExpires?: string
+  fpSha256?: string
+  jarm?: string
+  org?: string
+  city?: string
+}
+export interface AssetCertQuery {
+  certSubjectCn?: string
+  certIssuerCn?: string
+  ipStr?: string
+  expired?: boolean
+  countryCode?: string
+}
+export interface AssetCertPageQuery extends AssetCertQuery, PageQuery {}

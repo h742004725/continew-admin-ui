@@ -75,10 +75,17 @@ defineOptions({ name: 'AsmOverview' })
 
 const router = useRouter()
 // 画像 → 查询联动：跳转资产列表并按暴露类别下钻（不传类别则查看全部暴露）
-const goExposed = (exposureType?: string) => router.push({
-  path: '/asm/asset',
-  query: { tab: 'service', exposed: '1', exposureType: exposureType || 'ALL', countryCode: countryCode.value },
-})
+const goExposed = (exposureType?: string) => {
+  // 证书过期属于证书维度，下钻到证书 Tab；其余端口类下钻到服务 Tab
+  if (exposureType === 'EXPIRED_CERT') {
+    router.push({ path: '/asm/asset', query: { tab: 'cert', expired: '1', countryCode: countryCode.value } })
+    return
+  }
+  router.push({
+    path: '/asm/asset',
+    query: { tab: 'service', exposed: '1', exposureType: exposureType || 'ALL', countryCode: countryCode.value },
+  })
+}
 
 // 分布下钻：端口/中间件/产品 → 服务列表；ASN → 主机列表
 const goService = (q: Record<string, string>) => router.push({
