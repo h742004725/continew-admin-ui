@@ -34,6 +34,7 @@
 
 <script setup lang="tsx">
 import { reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import type { TableColumnData } from '@arco-design/web-vue'
 import { listAssetService, type AssetServiceQuery, type AssetServiceResp } from '@/apis/asm/asset'
 import { useTable } from '@/hooks'
@@ -42,7 +43,9 @@ import ServiceDetailDrawer from '../ServiceDetailDrawer.vue'
 // 暴露端口集合（与后端 ExposureRules 对齐：数据库 + 远程管理）
 const EXPOSED_PORTS = new Set([3306, 5432, 6379, 27017, 9200, 1433, 11211, 9042, 5984, 3389, 5900, 5901, 5985, 5986, 23])
 
-const queryForm = reactive<AssetServiceQuery>({})
+const route = useRoute()
+// 支持从画像页联动进入并默认开启「暴露」过滤（/asm/asset?exposed=1）
+const queryForm = reactive<AssetServiceQuery>({ exposed: route.query.exposed === '1' ? true : undefined })
 
 const { tableData: dataList, loading, pagination, search: doSearch } = useTable(
   (page) => listAssetService({ ...queryForm, ...page }),

@@ -14,7 +14,7 @@
     <!-- KPI 卡片 -->
     <a-grid :cols="{ xs: 2, sm: 3, md: 6 }" :col-gap="12" :row-gap="12" style="margin-bottom: 16px">
       <a-grid-item v-for="kpi in kpiList" :key="kpi.label">
-        <a-card :bordered="true" :body-style="{ padding: '16px' }">
+        <a-card :bordered="true" :body-style="{ padding: '16px' }" :hoverable="kpi.danger" :style="kpi.danger ? { cursor: 'pointer' } : {}" @click="kpi.danger && goExposed()">
           <a-statistic :title="kpi.label" :value="kpi.value" :value-style="kpi.danger ? { color: 'rgb(var(--red-6))' } : {}" show-group-separator />
         </a-card>
       </a-grid-item>
@@ -42,16 +42,20 @@
         </a-card>
       </a-grid-item>
       <a-grid-item :span="{ xs: 1, md: 2 }">
-        <a-card title="暴露面汇总" :loading="loading">
+        <a-card :loading="loading">
+          <template #title>暴露面汇总</template>
+          <template #extra>
+            <a-link @click="goExposed()">查看暴露资产 <icon-right /></a-link>
+          </template>
           <a-space wrap size="large">
-            <a-statistic
-              v-for="item in stat?.exposureSummary"
-              :key="item.name"
-              :title="item.name"
-              :value="item.count"
-              :value-style="{ color: item.count > 0 ? 'rgb(var(--red-6))' : 'rgb(var(--green-6))' }"
-              show-group-separator
-            />
+            <div v-for="item in stat?.exposureSummary" :key="item.name" class="exposure-item" @click="goExposed()">
+              <a-statistic
+                :title="item.name"
+                :value="item.count"
+                :value-style="{ color: item.count > 0 ? 'rgb(var(--red-6))' : 'rgb(var(--green-6))' }"
+                show-group-separator
+              />
+            </div>
             <a-empty v-if="!stat?.exposureSummary?.length" description="暂无数据" />
           </a-space>
         </a-card>
@@ -62,11 +66,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import BarList from './BarList.vue'
 import { getAssetOverview } from '@/apis/asm'
 import type { AssetStatResp } from '@/apis/asm'
 
 defineOptions({ name: 'AsmOverview' })
+
+const router = useRouter()
+// 画像 → 查询联动：跳转资产列表并开启「暴露」过滤
+const goExposed = () => router.push({ path: '/asm/asset', query: { tab: 'service', exposed: '1' } })
 
 const countryOptions = [
   { label: '印度 IN', value: 'IN' },
@@ -101,3 +110,15 @@ const fetchData = async () => {
 
 onMounted(fetchData)
 </script>
+
+<style scoped lang="scss">
+.exposure-item {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.exposure-item:hover {
+  background: var(--color-fill-2);
+}
+</style>
