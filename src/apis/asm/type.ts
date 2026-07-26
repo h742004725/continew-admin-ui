@@ -170,3 +170,27 @@ export interface AssetCertQuery {
   countryCode?: string
 }
 export interface AssetCertPageQuery extends AssetCertQuery, PageQuery {}
+
+/** Web 站点资产 */
+export interface AssetWebResp {
+  serviceId: string
+  ipStr: string
+  port: number
+  scheme?: string
+  httpStatus?: number
+  httpTitle?: string
+  httpServer?: string
+  httpWaf?: string
+  org?: string
+  city?: string
+  shodanTimestamp?: string
+}
+export interface AssetWebQuery {
+  httpTitle?: string
+  httpServer?: string
+  httpStatus?: number
+  ipStr?: string
+  httpsOnly?: boolean
+  countryCode?: string
+}
+export interface AssetWebPageQuery extends AssetWebQuery, PageQuery {}

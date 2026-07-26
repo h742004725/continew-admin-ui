@@ -28,7 +28,7 @@
       </a-grid-item>
       <a-grid-item>
         <a-card title="Web 中间件 TOP10" :loading="loading">
-          <BarList :data="stat?.topServers" clickable @item-click="(i) => goService({ httpServer: i.name })" />
+          <BarList :data="stat?.topServers" clickable @item-click="(i) => goWeb({ httpServer: i.name })" />
         </a-card>
       </a-grid-item>
       <a-grid-item>
@@ -95,6 +95,10 @@ const goService = (q: Record<string, string>) => router.push({
 const goHost = (q: Record<string, string>) => router.push({
   path: '/asm/asset',
   query: { tab: 'host', countryCode: countryCode.value, ...q },
+})
+const goWeb = (q: Record<string, string>) => router.push({
+  path: '/asm/asset',
+  query: { tab: 'web', countryCode: countryCode.value, ...q },
 })
 
 const countryOptions = [

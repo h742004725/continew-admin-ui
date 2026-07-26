@@ -10,6 +10,9 @@
       <a-tab-pane key="domain" title="域名">
         <DomainList v-if="activeKey === 'domain'" />
       </a-tab-pane>
+      <a-tab-pane key="web" title="Web 站点">
+        <WebList v-if="activeKey === 'web'" />
+      </a-tab-pane>
       <a-tab-pane key="cert" title="证书">
         <CertList v-if="activeKey === 'cert'" />
       </a-tab-pane>
@@ -23,6 +26,7 @@ import { useRoute, useRouter } from 'vue-router'
 import HostList from './components/HostList.vue'
 import ServiceList from './components/ServiceList.vue'
 import DomainList from './components/DomainList.vue'
+import WebList from './components/WebList.vue'
 import CertList from './components/CertList.vue'
 
 defineOptions({ name: 'AsmAsset' })
