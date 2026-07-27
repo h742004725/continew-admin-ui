@@ -1,5 +1,6 @@
 <template>
-  <GiPageLayout>
+  <!-- 画像内容为多张卡片，超出视口需可滚动；GiPageLayout body 默认 overflow:hidden（供表格页内部滚动用），此处显式放开 -->
+  <GiPageLayout :body-style="{ overflowY: 'auto' }">
     <a-space style="margin-bottom: 16px">
       <span style="font-weight: 600">国家/区域</span>
       <a-select v-model="countryCode" style="width: 160px" @change="fetchData">
