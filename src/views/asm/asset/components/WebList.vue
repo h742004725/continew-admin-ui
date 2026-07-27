@@ -10,21 +10,23 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
-        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
-      </a-select>
-      <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 170px" @change="search" />
-      <a-input v-model="queryForm.httpServer" placeholder="中间件" allow-clear style="width: 140px" @change="search" />
-      <a-input-number v-model="queryForm.httpStatus" placeholder="状态码" allow-clear style="width: 110px" @change="search" />
-      <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 140px" @change="search" />
-      <a-tooltip content="仅看 HTTPS 站点">
-        <a-switch v-model="queryForm.httpsOnly" @change="search">
-          <template #checked>HTTPS</template>
-          <template #unchecked>HTTPS</template>
-        </a-switch>
-      </a-tooltip>
-      <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
-      <a-button @click="reset">重置</a-button>
+      <a-space wrap :size="8">
+        <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+          <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+        </a-select>
+        <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 170px" @press-enter="search" />
+        <a-input v-model="queryForm.httpServer" placeholder="中间件" allow-clear style="width: 140px" @press-enter="search" />
+        <a-input-number v-model="queryForm.httpStatus" placeholder="状态码" allow-clear style="width: 110px" @press-enter="search" />
+        <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 140px" @press-enter="search" />
+        <a-tooltip content="仅看 HTTPS 站点">
+          <a-switch v-model="queryForm.httpsOnly" @change="search">
+            <template #checked>HTTPS</template>
+            <template #unchecked>HTTPS</template>
+          </a-switch>
+        </a-tooltip>
+        <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
+        <a-button @click="reset">重置</a-button>
+      </a-space>
     </template>
   </GiTable>
 </template>
@@ -35,6 +37,22 @@ import { useRoute } from 'vue-router'
 import type { TableColumnData } from '@arco-design/web-vue'
 import { listAssetWeb, type AssetWebQuery } from '@/apis/asm'
 import { useTable } from '@/hooks'
+
+/** 尝试还原 UTF-8 被误按 Latin-1 解码的标题（如 â€" → —） */
+const fixMojibake = (s?: string) => {
+  if (!s) return s
+  // 仅在出现典型乱码特征时尝试修复，避免误伤正常 ASCII/中文
+  if (!/[ÃÂâ]/.test(s) && !/Ã.|Â.|â./.test(s)) return s
+  try {
+    const bytes = Uint8Array.from(Array.from(s, (c) => c.charCodeAt(0) & 0xff))
+    const decoded = new TextDecoder('utf-8').decode(bytes)
+    // 解码后若含替换符则放弃
+    if (decoded.includes('�')) return s
+    return decoded
+  } catch {
+    return s
+  }
+}
 
 const COUNTRY_OPTIONS = [
   { label: '印度 IN', value: 'IN' },
@@ -87,7 +105,11 @@ const columns: TableColumnData[] = [
       ? <a-tag color={statusColor(record.httpStatus)} size="small">{record.httpStatus}</a-tag>
       : <span style="color: var(--color-text-4)">-</span>
   ) },
-  { title: '标题', dataIndex: 'httpTitle', ellipsis: true, tooltip: true, width: 220 },
+  {
+    title: '标题', width: 220, ellipsis: true, tooltip: true,
+    // 入库时 UTF-8 被误当 Latin-1 解码的脏数据，展示侧尽量还原
+    render: ({ record }) => fixMojibake(record.httpTitle) || '-',
+  },
   { title: '中间件', dataIndex: 'httpServer', ellipsis: true, tooltip: true, width: 150 },
   { title: 'WAF', dataIndex: 'httpWaf', width: 110 },
   { title: '组织', dataIndex: 'org', ellipsis: true, tooltip: true, width: 160 },

@@ -10,21 +10,23 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
-        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
-      </a-select>
-      <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 150px" @change="search" />
-      <a-input v-model="queryForm.asn" placeholder="ASN" allow-clear style="width: 120px" @change="search" />
-      <a-input v-model="queryForm.org" placeholder="组织" allow-clear style="width: 150px" @change="search" />
-      <a-input v-model="queryForm.city" placeholder="城市" allow-clear style="width: 120px" @change="search" />
-      <a-tooltip content="仅看存在暴露服务的主机">
-        <a-switch v-model="queryForm.exposed" @change="search">
-          <template #checked>暴露</template>
-          <template #unchecked>暴露</template>
-        </a-switch>
-      </a-tooltip>
-      <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
-      <a-button @click="reset">重置</a-button>
+      <a-space wrap :size="8">
+        <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+          <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+        </a-select>
+        <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 150px" @press-enter="search" />
+        <a-input v-model="queryForm.asn" placeholder="ASN" allow-clear style="width: 120px" @press-enter="search" />
+        <a-input v-model="queryForm.org" placeholder="组织" allow-clear style="width: 150px" @press-enter="search" />
+        <a-input v-model="queryForm.city" placeholder="城市" allow-clear style="width: 120px" @press-enter="search" />
+        <a-tooltip content="仅看存在暴露服务的主机">
+          <a-switch v-model="queryForm.exposed" @change="search">
+            <template #checked>暴露</template>
+            <template #unchecked>暴露</template>
+          </a-switch>
+        </a-tooltip>
+        <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
+        <a-button @click="reset">重置</a-button>
+      </a-space>
     </template>
     <template #action="{ record }">
       <a-link @click="onViewServices(record)">查看服务</a-link>

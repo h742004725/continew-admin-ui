@@ -20,6 +20,25 @@
       </a-grid-item>
     </a-grid>
 
+    <!-- 暴露面汇总前置：首屏可见，符合「先看风险」的设计 -->
+    <a-card :loading="loading" style="margin-bottom: 16px">
+      <template #title>暴露面汇总</template>
+      <template #extra>
+        <a-link @click="goExposed()">查看暴露资产 <icon-right /></a-link>
+      </template>
+      <a-space wrap size="large">
+        <div v-for="item in stat?.exposureSummary" :key="item.name" class="exposure-item" @click="goExposed(item.code)">
+          <a-statistic
+            :title="item.name"
+            :value="item.count"
+            :value-style="{ color: item.count > 0 ? 'rgb(var(--red-6))' : 'rgb(var(--green-6))' }"
+            show-group-separator
+          />
+        </div>
+        <a-empty v-if="!stat?.exposureSummary?.length" description="暂无数据" />
+      </a-space>
+    </a-card>
+
     <a-grid :cols="{ xs: 1, md: 2 }" :col-gap="16" :row-gap="16">
       <a-grid-item>
         <a-card title="开放端口 TOP10" :loading="loading">
@@ -39,25 +58,6 @@
       <a-grid-item>
         <a-card title="运营商 / ASN TOP10" :loading="loading">
           <BarList :data="stat?.topAsn" clickable @item-click="(i) => goHost({ asn: i.name })" />
-        </a-card>
-      </a-grid-item>
-      <a-grid-item :span="{ xs: 1, md: 2 }">
-        <a-card :loading="loading">
-          <template #title>暴露面汇总</template>
-          <template #extra>
-            <a-link @click="goExposed()">查看暴露资产 <icon-right /></a-link>
-          </template>
-          <a-space wrap size="large">
-            <div v-for="item in stat?.exposureSummary" :key="item.name" class="exposure-item" @click="goExposed(item.code)">
-              <a-statistic
-                :title="item.name"
-                :value="item.count"
-                :value-style="{ color: item.count > 0 ? 'rgb(var(--red-6))' : 'rgb(var(--green-6))' }"
-                show-group-separator
-              />
-            </div>
-            <a-empty v-if="!stat?.exposureSummary?.length" description="暂无数据" />
-          </a-space>
         </a-card>
       </a-grid-item>
     </a-grid>

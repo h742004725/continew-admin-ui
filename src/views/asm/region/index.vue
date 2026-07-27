@@ -26,8 +26,8 @@
         </a-button>
       </template>
       <template #action="{ record }">
-        <a-space>
-          <a-link @click="onResolve(record.countryCode)">重新解析</a-link>
+        <a-space :size="12" style="white-space: nowrap">
+          <a-link @click="onResolve(record.countryCode)">{{ (record.asnCount || 0) > 0 ? '重新解析' : '解析疆域' }}</a-link>
           <a-link @click="goAssets(record.countryCode)">查看资产</a-link>
         </a-space>
       </template>
@@ -120,26 +120,45 @@ const columns: TableColumnData[] = [
   { title: '监控', width: 90, align: 'center', render: ({ record }) => (
     record.monitorOn ? <a-tag color="green" size="small">监控中</a-tag> : <a-tag size="small">未启用</a-tag>
   ) },
-  { title: '疆域 ASN', width: 110, align: 'right', render: ({ record }) => fmt(record.asnCount) },
-  { title: '疆域 IP 段', width: 120, align: 'right', render: ({ record }) => fmt(record.cidrCount) },
-  { title: 'IPv4 地址量', width: 150, align: 'right', render: ({ record }) => fmt(record.ipv4Total) },
-  { title: '已测绘主机', width: 130, align: 'right', render: ({ record }) => fmt(record.hostCount) },
-  { title: '覆盖率', width: 160, render: ({ record }) => (
-    <div style="display:flex;align-items:center;gap:8px">
-      <a-progress
-        percent={Math.min((record.coverage || 0) / 100, 1)}
-        size="small"
-        style="flex:1"
-        show-text={false}
-        status={(record.coverage || 0) > 0 ? 'normal' : 'warning'}
-      />
-      <span style="font-variant-numeric:tabular-nums;min-width:52px;text-align:right">
-        {(record.coverage ?? 0).toFixed(4)}%
-      </span>
-    </div>
-  ) },
-  { title: '最近解析', dataIndex: 'lastResolveTime', width: 180 },
-  { title: '操作', slotName: 'action', width: 150, fixed: 'right' },
+  {
+    title: '疆域 ASN', width: 120, align: 'right',
+    render: ({ record }) => (record.asnCount || 0) > 0
+      ? fmt(record.asnCount)
+      : <a-tag color="orangered" size="small">未解析</a-tag>,
+  },
+  {
+    title: '疆域 IP 段', width: 120, align: 'right',
+    render: ({ record }) => (record.cidrCount || 0) > 0
+      ? fmt(record.cidrCount)
+      : <a-tag color="orangered" size="small">未解析</a-tag>,
+  },
+  { title: 'IPv4 地址量', width: 140, align: 'right', render: ({ record }) => fmt(record.ipv4Total) },
+  { title: '已测绘主机', width: 120, align: 'right', render: ({ record }) => fmt(record.hostCount) },
+  {
+    title: '覆盖率', width: 180,
+    render: ({ record }) => {
+      // 未解析疆域时覆盖率无意义，避免 0% 误导
+      if (!(record.asnCount || 0) && !(record.cidrCount || 0)) {
+        return <a-typography-text type="secondary">请先解析疆域</a-typography-text>
+      }
+      return (
+        <div style="display:flex;align-items:center;gap:8px">
+          <a-progress
+            percent={Math.min((record.coverage || 0) / 100, 1)}
+            size="small"
+            style="flex:1"
+            show-text={false}
+            status={(record.coverage || 0) > 0 ? 'normal' : 'warning'}
+          />
+          <span style="font-variant-numeric:tabular-nums;min-width:52px;text-align:right">
+            {(record.coverage ?? 0).toFixed(4)}%
+          </span>
+        </div>
+      )
+    },
+  },
+  { title: '最近解析', dataIndex: 'lastResolveTime', width: 170 },
+  { title: '操作', slotName: 'action', width: 180, fixed: 'right' },
 ]
 
 fetchData()

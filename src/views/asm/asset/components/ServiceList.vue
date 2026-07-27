@@ -10,32 +10,34 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
-        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
-      </a-select>
-      <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 150px" @change="search" />
-      <a-input-number v-model="queryForm.port" placeholder="端口" allow-clear style="width: 110px" @change="search" />
-      <a-input v-model="queryForm.product" placeholder="产品" allow-clear style="width: 130px" @change="search" />
-      <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 130px" @change="search" />
-      <a-input v-model="queryForm.httpServer" placeholder="中间件" allow-clear style="width: 130px" @change="search" />
-      <a-input v-model="queryForm.domain" placeholder="域名" allow-clear style="width: 140px" @change="search" />
-      <a-tooltip content="仅看暴露资产（数据库/远程管理/证书过期）">
-        <a-switch v-model="queryForm.exposed" @change="onExposedChange">
-          <template #checked>暴露</template>
-          <template #unchecked>暴露</template>
-        </a-switch>
-      </a-tooltip>
-      <a-select
-        v-if="queryForm.exposed"
-        v-model="queryForm.exposureType"
-        style="width: 150px"
-        placeholder="暴露类别"
-        @change="search"
-      >
-        <a-option v-for="t in EXPOSURE_TYPES" :key="t.value" :value="t.value">{{ t.label }}</a-option>
-      </a-select>
-      <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
-      <a-button @click="reset">重置</a-button>
+      <a-space wrap :size="8">
+        <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+          <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+        </a-select>
+        <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 140px" @press-enter="search" />
+        <a-input-number v-model="queryForm.port" placeholder="端口" allow-clear style="width: 100px" @press-enter="search" />
+        <a-input v-model="queryForm.product" placeholder="产品" allow-clear style="width: 120px" @press-enter="search" />
+        <a-input v-model="queryForm.httpTitle" placeholder="标题" allow-clear style="width: 120px" @press-enter="search" />
+        <a-input v-model="queryForm.httpServer" placeholder="中间件" allow-clear style="width: 120px" @press-enter="search" />
+        <a-input v-model="queryForm.domain" placeholder="域名" allow-clear style="width: 130px" @press-enter="search" />
+        <a-tooltip content="仅看暴露资产（数据库/远程管理/证书过期）">
+          <a-switch v-model="queryForm.exposed" @change="onExposedChange">
+            <template #checked>暴露</template>
+            <template #unchecked>暴露</template>
+          </a-switch>
+        </a-tooltip>
+        <a-select
+          v-if="queryForm.exposed"
+          v-model="queryForm.exposureType"
+          style="width: 150px"
+          placeholder="暴露类别"
+          @change="search"
+        >
+          <a-option v-for="t in EXPOSURE_TYPES" :key="t.value" :value="t.value">{{ t.label }}</a-option>
+        </a-select>
+        <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
+        <a-button @click="reset">重置</a-button>
+      </a-space>
     </template>
     <template #action="{ record }">
       <a-link v-permission="['asm:service:get']" @click="onDetail(record)">详情</a-link>

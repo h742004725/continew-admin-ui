@@ -10,20 +10,22 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
-        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
-      </a-select>
-      <a-input v-model="queryForm.certSubjectCn" placeholder="主题 CN" allow-clear style="width: 170px" @change="search" />
-      <a-input v-model="queryForm.certIssuerCn" placeholder="颁发者" allow-clear style="width: 150px" @change="search" />
-      <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 140px" @change="search" />
-      <a-tooltip content="仅看已过期证书">
-        <a-switch v-model="queryForm.expired" @change="search">
-          <template #checked>已过期</template>
-          <template #unchecked>已过期</template>
-        </a-switch>
-      </a-tooltip>
-      <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
-      <a-button @click="reset">重置</a-button>
+      <a-space wrap :size="8">
+        <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+          <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+        </a-select>
+        <a-input v-model="queryForm.certSubjectCn" placeholder="主题 CN" allow-clear style="width: 170px" @press-enter="search" />
+        <a-input v-model="queryForm.certIssuerCn" placeholder="颁发者" allow-clear style="width: 150px" @press-enter="search" />
+        <a-input v-model="queryForm.ipStr" placeholder="IP/网段" allow-clear style="width: 140px" @press-enter="search" />
+        <a-tooltip content="仅看已过期证书">
+          <a-switch v-model="queryForm.expired" @change="search">
+            <template #checked>已过期</template>
+            <template #unchecked>已过期</template>
+          </a-switch>
+        </a-tooltip>
+        <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
+        <a-button @click="reset">重置</a-button>
+      </a-space>
     </template>
   </GiTable>
 </template>

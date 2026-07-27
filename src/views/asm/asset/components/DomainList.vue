@@ -10,12 +10,14 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
-        <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
-      </a-select>
-      <a-input v-model="queryForm.domain" placeholder="域名关键字" allow-clear style="width: 200px" @change="search" />
-      <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
-      <a-button @click="reset">重置</a-button>
+      <a-space wrap :size="8">
+        <a-select v-model="queryForm.countryCode" style="width: 120px" @change="search">
+          <a-option v-for="c in COUNTRY_OPTIONS" :key="c.value" :value="c.value">{{ c.label }}</a-option>
+        </a-select>
+        <a-input v-model="queryForm.domain" placeholder="域名关键字" allow-clear style="width: 200px" @press-enter="search" />
+        <a-button type="primary" @click="search"><template #icon><icon-search /></template>查询</a-button>
+        <a-button @click="reset">重置</a-button>
+      </a-space>
     </template>
   </GiTable>
 </template>
