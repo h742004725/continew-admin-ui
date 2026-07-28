@@ -1,6 +1,7 @@
 <template>
-  <!-- 画像内容为多张卡片，超出视口需可滚动；GiPageLayout body 默认 overflow:hidden（供表格页内部滚动用），此处显式放开 -->
-  <GiPageLayout :body-style="{ overflowY: 'auto' }">
+  <GiPageLayout>
+    <!-- 内层滚动容器：保持 GiPageLayout body 默认 overflow:hidden（与其他页一致，避免覆盖 body overflow 干扰路由切换过渡），画像多卡片在此内部滚动 -->
+    <div class="ov-scroll">
     <a-space style="margin-bottom: 16px">
       <span style="font-weight: 600">国家/区域</span>
       <a-select v-model="countryCode" style="width: 160px" @change="fetchData">
@@ -62,6 +63,7 @@
         </a-card>
       </a-grid-item>
     </a-grid>
+    </div>
   </GiPageLayout>
 </template>
 
@@ -137,6 +139,10 @@ onMounted(fetchData)
 </script>
 
 <style scoped lang="scss">
+.ov-scroll {
+  height: 100%;
+  overflow-y: auto;
+}
 .exposure-item {
   cursor: pointer;
   padding: 4px 8px;
